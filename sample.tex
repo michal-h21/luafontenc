@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage{luacode}
+\usepackage[T1]{fontenc}
+\let\oldfontenc\fontencoding
+\begin{luacode*}
+ encodings = {}
+ encodings.max = 0
+ function getEncId(s)
+ local enc = encodings[s] 
+ if not enc then
+   encodings.max = encodings.max + 1
+   enc = encodings.max
+ end
+ encodings[s] = enc
+ return enc
+ end
+\end{luacode*}
+ \def\getEncId#1{%
+   \luatexattribute999=\directlua{%
+     %local enc = getEncId("\luatexluaescapestring{#1}") 
+     local enc = getEncId("#1") 
+     print(enc)
+     tex.write(enc)
+    }
+ }
+ \def\fontencoding#1{\oldfontenc{#1}\getEncId{#1}}
+\begin{document}
+
+Nazdar světe \v{c} \'a
+
+\end{document}
