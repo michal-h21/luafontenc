@@ -1,31 +1,15 @@
 \documentclass{article}
 \usepackage{luacode}
-\usepackage[T1]{fontenc}
-\let\oldfontenc\fontencoding
-\begin{luacode*}
- encodings = {}
- encodings.max = 0
- function getEncId(s)
- local enc = encodings[s] 
- if not enc then
-   encodings.max = encodings.max + 1
-   enc = encodings.max
- end
- encodings[s] = enc
- return enc
- end
-\end{luacode*}
- \def\getEncId#1{%
-   \luatexattribute999=\directlua{%
-     %local enc = getEncId("\luatexluaescapestring{#1}") 
-     local enc = getEncId("#1") 
-     print(enc)
-     tex.write(enc)
-    }
- }
- \def\fontencoding#1{\oldfontenc{#1}\getEncId{#1}}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T2A,T1]{fontenc}
+\usepackage[russian,english]{babel}
+\usepackage{luafontenc}
 \begin{document}
-
+%\renewcommand{\sfdefault}{PTSans-TLF}\normalfont
 Nazdar světe \v{c} \'a
 
+\textcyrillic{у меня есть машина. я очень харашо.}
+
+Zase nazdar
 \end{document}

@@ -1,0 +1,19 @@
+\ProvidesPackage{luafontenc}
+\usepackage{luacode}
+\begin{luacode*}
+  encoding = require "encoding"
+  luatexbase.add_to_callback("pre_linebreak_filter",encoding.callback, "fontenc")
+\end{luacode*}
+ \def\getEncId#1{%
+   \luatexattribute999=\directlua{%
+     %local enc = getEncId("\luatexluaescapestring{#1}") 
+     local enc = encoding.getEncId("#1") 
+     tex.write(enc)
+    }
+ }
+\AtBeginDocument{%
+\let\oldfontenc\fontencoding
+\def\fontencoding#1{\oldfontenc{#1}\getEncId{#1}}
+}
+
+\endinput
