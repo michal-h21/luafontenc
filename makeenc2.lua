@@ -5,6 +5,7 @@ local glyphs = require "glyphload"
 
 print "local m = {" 
 for k,v in pairs(symbols) do 
-  print("["..k .."] = 0x" .. (glyphs:getGlyph(v) or "nil") ..",")
+  local g = glyphs:getGlyph(v):gsub(" .*","") or "nil"
+  print("["..k .."] = 0x" .. g ..",")
 end
 print "}"
