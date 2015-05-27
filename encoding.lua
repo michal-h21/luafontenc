@@ -2,6 +2,7 @@ local M = {}
 local encodings = {}
 local fonttypes = {}
 local loaded_encodings = {}
+local utfchar = unicode.utf8.char
 
 encodings.max = 0
 function M.getEncId(s)
@@ -44,8 +45,20 @@ local loadEnc = function(encid)
   local supported_fontenc = M.supported_fontenc
   local encid = encid
   local enc = string.lower(encodings[encid] or M.default_fontenc)
-  print(enc, supported_fontenc[enc])
-  return {}
+  if supported_fontenc[enc] then
+     local loaded = loaded_encodings[enc]
+     if loaded then return loaded end
+     local m = require("encodings."..enc)
+     local t = {}
+     for k,v in pairs(m) do
+       t[v] = k
+     end
+     loaded_encodings[enc] = t
+     return t
+  else
+    -- chars will be not replaced
+    return nil
+  end
 end
 
 local getFontType = function(f)
@@ -61,10 +74,10 @@ end
 local getChar = function(char, encid)
   local enc = loadEnc(encid)
   if not enc then return char end
+  print(utfchar(char), enc[char])
   return enc[char]
 end
 
-local utfchar = unicode.utf8.char
 
 
 function M.callback(head)
@@ -73,7 +86,7 @@ function M.callback(head)
     local font_type = getFontType(curr_font)
     if font_type ~="opentype" or font_type ~= "truetype" then
       local encid = node.has_attribute(n,999)
-      print(utfchar(n.char), getChar(n.char, encid))
+      n.char = getChar(n.char, encid) or n.char
     end
   end
   return head
