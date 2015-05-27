@@ -8,4 +8,4 @@ for k,v in pairs(symbols) do
   local g = glyphs:getGlyph(v):gsub(" .*","") or "nil"
   print("["..k .."] = 0x" .. g ..",")
 end
-print "}"
+print "}\n return m"
