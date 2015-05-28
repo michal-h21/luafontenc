@@ -65,6 +65,10 @@ local getFontType = function(f)
   local fonttype = fonttypes[f] 
   if fonttype then return fonttype end
   local curr_font = font.fonts[f]
+  if not curr_font then 
+    print("luafontenc: can't load font number "..f)
+    return nil 
+  end
   local font_type = curr_font.format
   fonttypes[f] = font_type
   print(font_type)
