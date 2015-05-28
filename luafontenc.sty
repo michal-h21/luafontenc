@@ -1,5 +1,10 @@
 \ProvidesPackage{luafontenc}
-\usepackage{luacode}
+\RequirePackage{ifluatex}
+\ifluatex\else
+\PackageWarning{luafontenc}{LuaLaTeX not detected, exiting}
+\endinput
+\fi
+\RequirePackage{luacode}
 \begin{luacode*}
   encoding = require "encoding"
   luatexbase.add_to_callback("pre_linebreak_filter",encoding.callback, "fontenc")
