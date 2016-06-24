@@ -4,6 +4,8 @@ local fonttypes = {}
 local loaded_encodings = {}
 local utfchar = unicode.utf8.char
 
+local glyph_id = node.id "glyph"
+
 encodings.max = 0
 function M.getEncId(s)
   local enc = encodings[s] 
@@ -85,7 +87,7 @@ end
 
 
 function M.callback(head)
-  for n in node.traverse_id(37,head) do
+  for n in node.traverse_id(glyph_id,head) do
     local curr_font = n.font
     local font_type = getFontType(curr_font)
     if font_type ~="opentype" or font_type ~= "truetype" then
