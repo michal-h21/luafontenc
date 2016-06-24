@@ -6,6 +6,26 @@ local utfchar = unicode.utf8.char
 
 local glyph_id = node.id "glyph"
 
+local function loadEnc(encid)
+  local supported_fontenc = M.supported_fontenc
+  local encid = encid
+  local enc = string.lower(encodings[encid] or M.default_fontenc)
+  if supported_fontenc[enc] then
+     local loaded = loaded_encodings[enc]
+     if loaded then return loaded end
+     local m = require("encodings."..enc)
+     local t = {}
+     for k,v in pairs(m) do
+       t[v] = k
+     end
+     loaded_encodings[enc] = t
+     return t
+  else
+    -- chars will be not replaced
+    return nil
+  end
+end
+
 encodings.max = 0
 function M.getEncId(s)
   local enc = encodings[s] 
@@ -16,7 +36,11 @@ function M.getEncId(s)
   encodings[s] = enc
   -- save also enc id
   encodings[enc] = s
-  return enc
+  local status = loadEnc(enc)
+  if not status then 
+    print("luafontenc warning: cannot load encoding "..s)
+  end
+  return enc, status
 end
 
 M.default_fontenc = "T1"
@@ -43,25 +67,6 @@ M.supported_fontenc = {
 , t1 = true
 }
 
-local loadEnc = function(encid)
-  local supported_fontenc = M.supported_fontenc
-  local encid = encid
-  local enc = string.lower(encodings[encid] or M.default_fontenc)
-  if supported_fontenc[enc] then
-     local loaded = loaded_encodings[enc]
-     if loaded then return loaded end
-     local m = require("encodings."..enc)
-     local t = {}
-     for k,v in pairs(m) do
-       t[v] = k
-     end
-     loaded_encodings[enc] = t
-     return t
-  else
-    -- chars will be not replaced
-    return nil
-  end
-end
 
 local getFontType = function(f)
   local fonttype = fonttypes[f] 
@@ -90,7 +95,7 @@ function M.callback(head)
   for n in node.traverse_id(glyph_id,head) do
     local curr_font = n.font
     local font_type = getFontType(curr_font)
-    if font_type ~="opentype" or font_type ~= "truetype" then
+    if font_type ~="opentype" and font_type ~= "truetype" then
       local encid = node.has_attribute(n,999)
       n.char = getChar(n.char, encid) or n.char
     end
