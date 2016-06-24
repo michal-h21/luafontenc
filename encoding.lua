@@ -65,6 +65,7 @@ M.supported_fontenc = {
 , pmboxdraw = true
 , lae = true
 , t1 = true
+, il2 = true
 }
 
 
