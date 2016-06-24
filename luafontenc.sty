@@ -8,6 +8,7 @@
 \begin{luacode*}
   encoding = require "encoding"
   luatexbase.add_to_callback("pre_linebreak_filter",encoding.callback, "fontenc")
+  luatexbase.add_to_callback("hpack_filter",encoding.callback, "fontenc")
 \end{luacode*}
  \def\getEncId#1{%
    \luatexattribute999=\directlua{%
